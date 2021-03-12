@@ -5,6 +5,7 @@ const exhbs = require("express-handlebars");
 const publicPath = express.static(path.join(__dirname, "./public"));
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+const methodOverride = require("method-override");
 
 mongoose.Promise = global.Promise;
 mongoose
@@ -15,7 +16,12 @@ mongoose
   .catch((error) => console.log(error));
 
 // Set the view engine
-app.engine("handlebars", exhbs({ defaultLayout: "home" }));
+const { select } = require("./helpers/handlebars-helpers");
+
+app.engine(
+  "handlebars",
+  exhbs({ defaultLayout: "home", helpers: { select: select } })
+);
 app.set("view engine", "handlebars");
 
 app.use(publicPath);
@@ -28,6 +34,9 @@ app.use(
 );
 
 app.use(bodyParser.json());
+
+// Method Override
+app.use(methodOverride("_method"));
 
 // Load routes
 const { router: main } = require("./routes/home/main");
