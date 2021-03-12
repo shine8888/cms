@@ -8,7 +8,11 @@ router.all("/*", (req, res, next) => {
 });
 
 router.get("/", (req, res) => {
-  res.send("It works");
+  Post.find({})
+    .lean()
+    .then((posts) => {
+      res.render("admin/posts", { posts: posts });
+    });
 });
 
 router.get("/create", (req, res) => {
@@ -37,6 +41,43 @@ router.post("/create", (req, res) => {
     .catch((error) => {
       console.log("Could not save");
     });
+});
+
+router.get("/edit/:id", (req, res) => {
+  Post.findOne({ _id: req.params.id })
+    .lean()
+    .then((post) => {
+      console.log(post);
+      res.render("admin/posts/edit", { post: post });
+    });
+});
+
+router.put("/edit/:id", (req, res) => {
+  Post.findOne({ _id: req.params.id }).then((post) => {
+    if (!req.body.allowComments) {
+      req.body.allowComments = false;
+    } else {
+      req.body.allowComments = true;
+    }
+    post.title = req.body.title;
+    post.status = req.body.status;
+    post.allowComments = req.body.allowComments;
+    post.body = req.body.body;
+    post
+      .save()
+      .then((updatedPost) => {
+        res.redirect("/admin/posts");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  });
+});
+
+router.delete("/:id", (req, res) => {
+  Post.remove({ _id: req.params.id }).then((result) => {
+    res.redirect("/admin/posts");
+  });
 });
 
 module.exports = { router };
