@@ -6,6 +6,9 @@ const publicPath = express.static(path.join(__dirname, "./public"));
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 const methodOverride = require("method-override");
+const upload = require("express-fileupload");
+const session = require("express-session");
+const flash = require("connect-flash");
 
 mongoose.Promise = global.Promise;
 mongoose
@@ -16,15 +19,21 @@ mongoose
   .catch((error) => console.log(error));
 
 // Set the view engine
-const { select } = require("./helpers/handlebars-helpers");
+const { select, generateTime } = require("./helpers/handlebars-helpers");
 
 app.engine(
   "handlebars",
-  exhbs({ defaultLayout: "home", helpers: { select: select } })
+  exhbs({
+    defaultLayout: "home",
+    helpers: { select: select, generateTime: generateTime },
+  })
 );
 app.set("view engine", "handlebars");
 
 app.use(publicPath);
+
+// Upload Middleware
+app.use(upload());
 
 // Body Parser
 app.use(
@@ -38,15 +47,33 @@ app.use(bodyParser.json());
 // Method Override
 app.use(methodOverride("_method"));
 
+app.use(
+  session({
+    secret: "Shine123_loving_Cathi",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
+
+app.use(flash());
+
+// Local variables using middleware
+app.use((req, res, next) => {
+  res.locals.success_message = req.flash("success_message");
+  next();
+});
+
 // Load routes
 const { router: main } = require("./routes/home/main");
 const { router: admin } = require("./routes/admin/admin");
 const { router: posts } = require("./routes/admin/posts");
+const { router: categories } = require("./routes/admin/categories");
 
 // Use routes
 app.use("/", main);
 app.use("/admin", admin);
 app.use("/admin/posts", posts);
+app.use("/admin/categories", categories);
 
 app.listen(3000, () => {
   console.log(`listening  on port 3000`);

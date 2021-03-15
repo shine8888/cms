@@ -15,8 +15,16 @@ router.get("/", (req, res) => {
 router.post("/generate-fake-posts", (req, res) => {
   for (let i = 0; i < req.body.amount; i++) {
     let post = new Post();
-    post.title = faker.title;
+    post.title = faker.name.title();
+    post.status = "public";
+    post.allowComments = faker.random.boolean();
+    post.body = faker.lorem.sentence();
+
+    post.save().then((savedPost) => {
+      console.log("All are saved");
+    });
   }
+  res.redirect("/admin");
 });
 
 module.exports = { router };

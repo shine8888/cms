@@ -1,6 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const Post = require("../../models/Post");
+const { isEmpty, uploadDir } = require("../../helpers/upload-helpers");
+const fs = require("fs");
+const path = require("path");
+const flash = require("connect-flash");
 
 router.all("/*", (req, res, next) => {
   req.app.locals.layout = "admin";
@@ -19,7 +23,19 @@ router.get("/create", (req, res) => {
   res.render("admin/posts/create");
 });
 
+// Submit form to create an object POST
 router.post("/create", (req, res) => {
+  let filename = "";
+  if (!isEmpty(req.files)) {
+    let file = req.files.file;
+    filename = Date.now() + "-" + file.name;
+    let dirUploads = "./public/upload/";
+
+    file.mv(dirUploads + filename, (err) => {
+      if (err) throw err;
+    });
+  }
+
   let allowComments = true;
   if (!req.body.allowComments) {
     allowComments = false;
@@ -30,15 +46,20 @@ router.post("/create", (req, res) => {
     status: req.body.status,
     allowComments: allowComments,
     body: req.body.body,
+    file: filename,
   });
 
   newPost
     .save()
     .then((savedPost) => {
-      console.log(savedPost);
+      req.flash(
+        "success_message",
+        `Post ${savedPost.title} was created succesfully `
+      );
       res.redirect("/admin/posts");
     })
-    .catch((error) => {
+    .catch((validator) => {
+      validator.errors;
       console.log("Could not save");
     });
 });
@@ -63,9 +84,26 @@ router.put("/edit/:id", (req, res) => {
     post.status = req.body.status;
     post.allowComments = req.body.allowComments;
     post.body = req.body.body;
+
+    let filename = "";
+    if (!isEmpty(req.files)) {
+      let file = req.files.file;
+      filename = Date.now() + "-" + file.name;
+      post.file = filename;
+      let dirUploads = "./public/upload/";
+
+      file.mv(dirUploads + filename, (err) => {
+        if (err) throw err;
+      });
+    }
+
     post
       .save()
       .then((updatedPost) => {
+        req.flash(
+          "success_message",
+          `Post ${updatedPost.title} was updated succesfully`
+        );
         res.redirect("/admin/posts");
       })
       .catch((error) => {
@@ -75,8 +113,15 @@ router.put("/edit/:id", (req, res) => {
 });
 
 router.delete("/:id", (req, res) => {
-  Post.remove({ _id: req.params.id }).then((result) => {
-    res.redirect("/admin/posts");
+  Post.findOne({ _id: req.params.id }).then((post) => {
+    fs.unlink(uploadDir + post.file, (err) => {
+      post.remove();
+      req.flash(
+        "success_message",
+        `Post ${post.title} was successfully deleted`
+      );
+      res.redirect("/admin/posts");
+    });
   });
 });
 
