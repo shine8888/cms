@@ -1,5 +1,5 @@
 <div class="col-sm-4">
-    <form action="/admin/categories/create">
+    <form action="/admin/categories/create" method="POST">
         <div class="form-group">
             <label for="name">Name</label>
             <input type="text" name="name" placeholder="Enter Title" class="form-control">
@@ -22,11 +22,18 @@
             </tr>
         </thead>
         <tbody>
+            {{#each categories}}
             <tr>
-                <td>213</td>
-                <td>Java</td>
-                <td>March 1 2088</td>
+                <td>{{_id}}</td>
+                <td>{{name}}</td>
+                <td>{{generateTime date 'MMM Do YYYY'}}</td>
+                <td><a class="btn btn-info" href="/admin/categories/edit/{{_id}}">Edit</a></td>
+                <td>
+                    <form action="/admin/categories/delete/{{_id}}?_method=DELETE" method="POST">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                </td>
             </tr>
+            {{/each}}
         </tbody>
     </table>
 </div>
