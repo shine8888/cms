@@ -9,10 +9,12 @@ const methodOverride = require("method-override");
 const upload = require("express-fileupload");
 const session = require("express-session");
 const flash = require("connect-flash");
+const { mongoDbUrl } = require("./config/database");
+const passport = require("passport");
 
 mongoose.Promise = global.Promise;
 mongoose
-  .connect("mongodb://localhost:27017/cms", { useMongoClient: true })
+  .connect(mongoDbUrl, { useMongoClient: true })
   .then((db) => {
     console.log("Mongo connected");
   })
@@ -57,10 +59,17 @@ app.use(
 
 app.use(flash());
 
+// Using Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
 // Local variables using middleware
 app.use((req, res, next) => {
+  res.locals.user = req.user || null;
   res.locals.success_message = req.flash("success_message");
   res.locals.error_message = req.flash("error_message");
+  res.locals.error = req.flash("error");
+
   next();
 });
 
