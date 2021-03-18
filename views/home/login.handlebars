@@ -1,16 +1,10 @@
 <div class="card card-login mx-auto mt-5">
     <div class="card-header">Login</div>
-
     <div class="card-body">
         <form action="/login" method="post">
-            {{#if error}}
-            <div class="alert alert-danger">
-                {{error}}
-            </div>
-            {{/if}}
             <div class="form-group">
-                <label for="exampleInputEmail1">Email address</label>
-                <input name="email" class="form-control" id="exampleInputEmail1" type="email"
+                <label for="email">Email address</label>
+                <input name="email" class="form-control" id="email" type="email"
                     aria-describedby="emailHelp" placeholder="Enter email">
             </div>
             <div class="form-group">

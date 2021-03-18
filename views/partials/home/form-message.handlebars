@@ -1,3 +1,10 @@
+{{#if error}}
+<div class="alert alert-danger">
+    {{error}}
+</div>
+{{/if}}
+
+{{!-- 
 {{#if success_message}}
 <div class="alert alert-success">
     {{success_message}}
@@ -10,3 +17,15 @@
     {{error_message}}
 </div>
 {{/if}}
+
+
+   {{#if errors}}
+        {{#each errors}}
+        <div class="alert alert-danger">
+
+            {{message}}
+        </div>
+
+        {{/each}}
+
+        {{/if}} --}}
