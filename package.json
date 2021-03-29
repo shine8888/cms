@@ -1,31 +1,33 @@
 {
-  "name": "cms",
-  "version": "1.0.0",
-  "description": "a CMS in Node",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "mongodb": "/Users/kieuvanquang/mongodb/bin/mongod.exe --dbpath=/Users/kieuvanquang/mongodb-data"
-  },
-  "keywords": [
-    "CMS"
-  ],
-  "author": "Shine",
-  "license": "ISC",
-  "dependencies": {
-    "bcryptjs": "^2.4.3",
-    "body-parser": "^1.19.0",
-    "connect-flash": "^0.1.1",
-    "express": "^4.17.1",
-    "express-fileupload": "^1.2.1",
-    "express-handlebars": "^5.2.1",
-    "express-session": "^1.17.1",
-    "faker": "^5.4.0",
-    "method-override": "^3.0.0",
-    "moment": "^2.29.1",
-    "mongoose": "^5.11.19"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.7"
-  }
+    "name": "cms",
+    "version": "1.0.0",
+    "description": "a CMS in Node",
+    "main": "app.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "mongodb": "/Users/muath/mongodb/bin/mongod.exe --dbpath=/Users/muath/mongodb-data"
+    },
+    "keywords": [
+        "CMS"
+    ],
+    "author": "Shine",
+    "license": "ISC",
+    "dependencies": {
+        "bcryptjs": "^2.4.3",
+        "body-parser": "^1.19.0",
+        "connect-flash": "^0.1.1",
+        "express": "^4.17.1",
+        "express-fileupload": "^1.2.1",
+        "express-handlebars": "^5.2.1",
+        "express-session": "^1.17.1",
+        "faker": "^5.4.0",
+        "method-override": "^3.0.0",
+        "moment": "^2.29.1",
+        "mongoose": "^5.11.19",
+        "passport": "^0.4.1",
+        "passport-local": "^1.0.0"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.7"
+    }
 }
