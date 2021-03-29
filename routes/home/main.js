@@ -6,6 +6,7 @@ const User = require("../../models/User");
 const bcryptjs = require("bcryptjs");
 const passport = require('passport')
 const LocalStrategy = require('passport-local').Strategy
+const bodyParser = require('body-parser')
 
 router.all("/*", (req, res, next) => {
     req.app.locals.layout = "home";
@@ -29,31 +30,46 @@ router.get("/about", (req, res) => {
 });
 
 router.get("/login", (req, res) => {
-    console.log(req.flash('error'))
-    res.render("home/login");
+    console.log(req.flash('message')); // This returns a string
+    res.render("home/login", { message: req.flash('message') });
 });
 
 
 
 // App Login
 
-passport.use(
-    new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
-        User.findOne({ email: email }).then(user => {
-            if (!user) {
-                return done(null, false, { message: 'No user found' });
+passport.use(new LocalStrategy({ usernameField: 'email', passReqToCallback: true }, function(req, email, password, done) {
+    User.findOne({ email: email }).then(user => {
+        console.log(user)
+        if (!user) {
+            return done(null, false, { message: 'Incorrect username.' });
+        }
+        bcryptjs.compare(password, user.password, (err, matched) => {
+            if (err) return err
+            if (matched) {
+                return done(null, user)
+            } else {
+                return done(null, false, { message: 'Incorrect password.' })
             }
-            bcryptjs.compare(password, user.password, (err, matched) => {
-                if (err) return err
-                if (matched) {
-                    return done(null, user)
-                } else {
-                    return done(null, false, { message: 'Password Incorrect' });
-                }
-            })
         })
+    })
 
-    }))
+}))
+
+
+
+// passport.use(new LocalStrategy({ usernameField: 'email', passReqToCallback: true }, function(req, email, password, done) {
+//     User.findOne({ username: username }, function(err, user) {
+//         if (err) { return done(err); }
+//         if (!user) {
+//             return done(null, false, { message: 'Incorrect username.' });
+//         }
+//         if (!user.validPassword(password)) {
+//             return done(null, false, { message: 'Incorrect password.' });
+//         }
+//         return done(null, user);
+//     });
+// }));
 
 passport.serializeUser((user, done) => {
     done(null, user.id);
@@ -65,14 +81,11 @@ passport.deserializeUser((id, done) => {
     });
 });
 
-
 router.post("/login", (req, res, next) => {
     passport.authenticate("local", {
-        failureFlash: true,
         successRedirect: "/admin",
         failureRedirect: "/login",
-        failureMessage: 'Quangggg'
-
+        failureFlash: true
     })(req, res, next);
 });
 

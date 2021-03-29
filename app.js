@@ -44,7 +44,6 @@ app.use(
     })
 );
 
-app.use(bodyParser.json());
 
 // Method Override
 app.use(methodOverride("_method"));
@@ -69,6 +68,7 @@ app.use((req, res, next) => {
     res.locals.error_message = req.flash("error_message");
     res.locals.form_errors = req.flash('form_errors')
     res.locals.error = req.flash("error");
+    res.locals.message = req.flash('message')
     next();
 });
 
