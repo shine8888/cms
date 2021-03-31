@@ -4,7 +4,7 @@
 </div>
 {{/if}}
 
-{{!-- 
+
 {{#if success_message}}
 <div class="alert alert-success">
     {{success_message}}
@@ -18,14 +18,13 @@
 </div>
 {{/if}}
 
+{{#if errors}}
+{{#each errors}}
+<div class="alert alert-danger">
 
-   {{#if errors}}
-        {{#each errors}}
-        <div class="alert alert-danger">
+    {{message}}
+</div>
 
-            {{message}}
-        </div>
+{{/each}}
 
-        {{/each}}
-
-        {{/if}} --}}
+{{/if}}
