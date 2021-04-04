@@ -77,12 +77,14 @@ const { router: main } = require("./routes/home/main");
 const { router: admin } = require("./routes/admin/admin");
 const { router: posts } = require("./routes/admin/posts");
 const { router: categories } = require("./routes/admin/categories");
+const { router: comments } = require("./routes/admin/comments");
 
 // Use routes
 app.use("/", main);
 app.use("/admin", admin);
 app.use("/admin/posts", posts);
 app.use("/admin/categories", categories);
+app.use("/admin/comments", comments);
 
 app.listen(3000, () => {
 	console.log(`listening  on port 3000`);
