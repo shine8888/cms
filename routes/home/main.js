@@ -144,13 +144,15 @@ router.post("/register", (req, res) => {
 });
 
 router.get("/posts/:id", (req, res) => {
-	let listComments = [];
 	Post.findOne({ _id: req.params.id })
-		.populate({ path: "comments", populate: { path: "user", model: "users" } })
+		.populate({
+			path: "comments",
+			match: { approveComment: true },
+			populate: { path: "user", model: "users" },
+		})
 		.populate("user")
 		.lean()
 		.then((post) => {
-			console.log(post.user.firstName, "OOOOOOOOOOOOOOOOOOOOOOOOOO");
 			Category.find({})
 				.lean()
 				.then((categories) => {

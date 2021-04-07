@@ -21,6 +21,7 @@ router.post("/", (req, res) => {
 		post.comments.push(newComment);
 		post.save().then((savedPost) => {
 			newComment.save().then((savedComment) => {
+				req.flash("success_message", "A comment has been added");
 				res.redirect(`/posts/${post._id}`);
 			});
 		});
@@ -40,5 +41,16 @@ router.delete("/:id", (req, res) => {
 			}
 		);
 	});
+});
+
+router.post("/approve-comment", (req, res) => {
+	Comment.findByIdAndUpdate(
+		req.body._id,
+		{ $set: { approveComment: req.body.approveComment } },
+		(err, result) => {
+			if (err) return err;
+			res.send(result);
+		}
+	);
 });
 module.exports = { router };
