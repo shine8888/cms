@@ -131,7 +131,7 @@ router.put("/edit/:id", (req, res) => {
 					"success_message",
 					`Post ${updatedPost.title} was updated succesfully`
 				);
-				res.redirect("/admin/posts");
+				res.redirect("/admin/posts/my-posts");
 			})
 			.catch((error) => {
 				console.log(error);
@@ -154,7 +154,7 @@ router.delete("/:id", (req, res) => {
 						"success_message",
 						`Post ${post.title} was successfully deleted`
 					);
-					res.redirect("/admin/posts");
+					res.redirect("/admin/posts/my-posts");
 				});
 			});
 		});
