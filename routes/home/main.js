@@ -15,14 +15,26 @@ router.all("/*", (req, res, next) => {
 });
 
 router.get("/", (req, res) => {
+	const perPage = 10;
+	const page = req.query.page || 1;
+
 	Post.find({})
+		.skip(perPage * page - perPage)
+		.limit(perPage)
 		.lean()
 		.then((posts) => {
-			Category.find({})
-				.lean()
-				.then((categories) => {
-					res.render("home/index", { posts: posts, categories: categories });
-				});
+			Post.count().then((postCount) => {
+				Category.find({})
+					.lean()
+					.then((categories) => {
+						res.render("home/index", {
+							posts: posts,
+							categories: categories,
+							current: parseInt(page),
+							pages: Math.ceil(postCount / perPage),
+						});
+					});
+			});
 		});
 });
 
@@ -143,8 +155,8 @@ router.post("/register", (req, res) => {
 	}
 });
 
-router.get("/posts/:id", (req, res) => {
-	Post.findOne({ _id: req.params.id })
+router.get("/posts/:slug", (req, res) => {
+	Post.findOne({ slug: req.params.slug })
 		.populate({
 			path: "comments",
 			match: { approveComment: true },

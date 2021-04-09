@@ -21,13 +21,17 @@ mongoose
 	.catch((error) => console.log(error));
 
 // Set the view engine
-const { select, generateTime } = require("./helpers/handlebars-helpers");
+const {
+	select,
+	generateTime,
+	paginate,
+} = require("./helpers/handlebars-helpers");
 
 app.engine(
 	"handlebars",
 	exhbs({
 		defaultLayout: "home",
-		helpers: { select: select, generateTime: generateTime },
+		helpers: { select: select, generateTime: generateTime, paginate: paginate },
 	})
 );
 app.set("view engine", "handlebars");
@@ -78,6 +82,7 @@ const { router: admin } = require("./routes/admin/admin");
 const { router: posts } = require("./routes/admin/posts");
 const { router: categories } = require("./routes/admin/categories");
 const { router: comments } = require("./routes/admin/comments");
+const { router: charts } = require("./routes/admin/charts");
 
 // Use routes
 app.use("/", main);
@@ -85,6 +90,7 @@ app.use("/admin", admin);
 app.use("/admin/posts", posts);
 app.use("/admin/categories", categories);
 app.use("/admin/comments", comments);
+app.use("/admin/charts", charts);
 
 app.listen(3000, () => {
 	console.log(`listening  on port 3000`);
