@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const URLSlugs = require("mongoose-url-slugs");
 
 const PostSchema = new Schema({
 	user: {
@@ -34,6 +35,9 @@ const PostSchema = new Schema({
 		type: Date,
 		default: Date.now(),
 	},
+	slug: {
+		type: String,
+	},
 	comments: [
 		{
 			type: Schema.Types.ObjectId,
@@ -42,4 +46,5 @@ const PostSchema = new Schema({
 	],
 });
 // usePushEach: true
+PostSchema.plugin(URLSlugs("title", { field: "slug" }));
 module.exports = mongoose.model("Post", PostSchema);
